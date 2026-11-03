@@ -1,0 +1,18 @@
+# Environment & Secrets
+.env
+*.env
+
+# Local Plaid Tokens & State (NEVER PUSH)
+tokens.json
+
+# Local User Config (Keep config.json local; ship config.example.json)
+config.json
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+.DS_Store

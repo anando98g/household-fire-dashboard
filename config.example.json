@@ -1,0 +1,20 @@
+{
+  "cash_floor": 45000.0,
+  "swr_rate": 0.0325,
+  "owners": ["Partner A", "Partner B", "Joint"],
+  "account_overrides": {
+    "EXAMPLE_PLAID_ACCOUNT_ID_WRAPPER": {
+      "role": "wrapper_shell",
+      "owner": "Partner A",
+      "note": "Workplace 401(k) PCRA wrapper shell to prevent double-counting"
+    },
+    "EXAMPLE_PLAID_ACCOUNT_ID_PENSION": {
+      "role": "future_income",
+      "owner": "Partner B",
+      "monthly_annuity": 2500.00,
+      "lump_sum_value": 300000.00,
+      "commence_year": 2045,
+      "note": "Vested Defined Benefit Pension"
+    }
+  }
+}

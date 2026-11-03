@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Household FIRE Dashboard & Strategy Lab</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; margin: 0; padding: 25px; color: #0f172a; }
+        .container { max-width: 1250px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 25px; }
+        .card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .card h3 { margin: 0 0 8px 0; font-size: 13px; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px; }
+        .card .stat { font-size: 26px; font-weight: 700; color: #0f172a; }
+        .card .sub { font-size: 13px; font-weight: 600; margin-top: 4px; }
+        .btn-connect { background: #2563eb; color: #fff; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        
+        .section-box { background: #fff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 20px; margin-bottom: 25px; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; margin-top: 10px; }
+        th { background: #f1f5f9; padding: 10px 12px; font-weight: 600; color: #475569; border-bottom: 1px solid #cbd5e1; }
+        td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; }
+        tr:hover { background: #f8fafc; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+        .badge-liquid { background: #dcfce7; color: #166534; }
+        .badge-wrapper_shell { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+        .badge-future_income { background: #ede9fe; color: #6d28d9; }
+        .badge-liability { background: #fee2e2; color: #b91c1c; }
+        
+        .owner-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .owner-anand { background: #e0f2fe; color: #0369a1; }
+        .owner-joan { background: #fce7f3; color: #be185d; }
+        .owner-joint { background: #fef3c7; color: #92400e; }
+        .owner-unknown { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+
+        .preset-btns { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .preset-btn { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 16px; padding: 6px 12px; font-size: 12px; cursor: pointer; color: #334155; }
+        .preset-btn:hover { background: #e2e8f0; }
+
+        .chat-container { border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; overflow: hidden; margin-top: 15px; }
+        .chat-thread { max-height: 540px; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; background: #f8fafc; }
+        .chat-placeholder { text-align: center; color: #94a3b8; font-size: 14px; margin: 30px 0; }
+        
+        .msg { max-width: 90%; padding: 14px 18px; border-radius: 8px; font-size: 14px; line-height: 1.6; word-wrap: break-word; }
+        .msg-user { align-self: flex-end; background: #2563eb; color: #ffffff; border-bottom-right-radius: 2px; }
+        .msg-gemini { align-self: flex-start; background: #ffffff; color: #0f172a; border: 1px solid #e2e8f0; border-left: 4px solid #2563eb; border-bottom-left-radius: 2px; }
+        .msg-header { font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; opacity: 0.8; }
+        .msg-content h2, .msg-content h3, .msg-content h4 { margin: 12px 0 6px 0; color: #0f172a; }
+        .msg-content ul, .msg-content ol { margin: 6px 0 10px 20px; padding: 0; }
+        .msg-content li { margin-bottom: 4px; }
+        .msg-content table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13px; }
+        .msg-content th { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 6px 10px; font-weight: 600; text-align: left; }
+        .msg-content td { border: 1px solid #e2e8f0; padding: 6px 10px; }
+        .msg-content p { margin: 6px 0; }
+        .msg-content hr { border: 0; border-top: 1px solid #e2e8f0; margin: 12px 0; }
+
+        .chat-input-bar { display: flex; gap: 10px; padding: 12px; background: #ffffff; border-top: 1px solid #e2e8f0; }
+        textarea { flex-grow: 1; height: 60px; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; box-sizing: border-box; font-size: 14px; font-family: inherit; resize: none; }
+        .btn-ask { background: #0f172a; color: #fff; border: none; padding: 0 20px; border-radius: 6px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        .btn-clear { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div>
+            <h1 style="margin: 0; font-size: 22px;">Household FIRE Dashboard</h1>
+            <p style="margin: 4px 0 0 0; color: #64748b; font-size: 14px;">Deterministic Multi-Custodian Portfolio Engine & Strategy Lab</p>
+        </div>
+        <button id="link-button" class="btn-connect">Connect Custodian</button>
+    </div>
+
+    <!-- Live Metric Cards -->
+    <div class="grid">
+        <div class="card">
+            <h3>Selected Net Worth</h3>
+            <div class="stat" id="stat-nw">$0.00</div>
+            <div class="sub" id="stat-allocation" style="color: #2563eb;">0% Stock / 0% Bond</div>
+        </div>
+        <div class="card">
+            <h3>Liquid Cash & Runway</h3>
+            <div class="stat" id="stat-cash">$0.00</div>
+            <div class="sub" id="stat-runway" style="color: #10b981;">Floor: $50,000</div>
+        </div>
+        <div class="card">
+            <h3 id="stat-swr-label">Safe Withdrawal</h3>
+            <div class="stat" id="stat-swr">$0.00 / yr</div>
+            <div class="sub" id="stat-swr-mo" style="color: #64748b;">$0.00 / mo</div>
+        </div>
+    </div>
+
+    <!-- Inventory Control Table -->
+    <div class="section-box">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0; font-size: 16px;">Account Inventory, Owners & Roles</h2>
+            <span style="font-size: 12px; color: #64748b;">Configured via config.json; uncheck to exclude accounts</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 40px;"><input type="checkbox" id="select-all" checked onclick="toggleAll(this)"></th>
+                    <th style="width: 140px;">Institution</th>
+                    <th>Account Name & Official Title</th>
+                    <th style="width: 120px;">Owner</th>
+                    <th style="width: 110px;">Role</th>
+                    <th style="width: 130px;">Subtype</th>
+                    <th style="text-align: right; width: 140px;">Balance</th>
+                </tr>
+            </thead>
+            <tbody id="accounts-table-body">
+                <tr><td colspan="7" style="text-align: center; color: #94a3b8;">Loading accounts...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Strategy Advisor -->
+    <div class="section-box">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h2 style="margin: 0; font-size: 16px;">Gemini Strategy Advisor</h2>
+            <button class="btn-clear" onclick="resetConversation()">Clear Conversation</button>
+        </div>
+        <div class="preset-btns">
+            <button class="preset-btn" onclick="setPrompt('Separate our portfolio out by taxable vs non-taxable, and by owner (Anand vs Joan vs Joint vs Unknown).')">Taxable vs Non-Taxable / Owner Split</button>
+            <button class="preset-btn" onclick="setPrompt('Analyze our Safe Withdrawal Rate. How does our future pension impact the bridge period?')">Evaluate SWR & Pension</button>
+            <button class="preset-btn" onclick="setPrompt('Where is all our cash currently held, and what is our exact stock/bond allocation?')">Check Cash & Allocation</button>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-thread" id="chat-thread">
+                <div class="chat-placeholder" id="chat-placeholder">
+                    Ask any question about your active accounts, tax locations, or rebalancing strategy.
+                </div>
+            </div>
+            <div class="chat-input-bar">
+                <textarea id="ai-prompt" placeholder="Ask a question... (Press Enter to Send)" onkeydown="handleKeyPress(event)"></textarea>
+                <button class="btn-ask" id="ask-btn" onclick="submitToGemini()">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+<script>
+let portfolioData = null;
+let conversationHistory = [];
+const STORAGE_KEY = "fire_excluded_accounts";
+
+function getExcludedAccounts() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+}
+
+function saveExcludedAccounts(excluded) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(excluded));
+}
+
+function formatCurrency(val) {
+    const isNegative = val < 0;
+    const formatted = Math.abs(val).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    return isNegative ? `-$${formatted}` : `$${formatted}`;
+}
+
+async function loadData() {
+    try {
+        const excluded = getExcludedAccounts();
+        const param = excluded.length > 0 ? `?excluded=${encodeURIComponent(excluded.join(','))}` : '';
+        const res = await fetch(`/portfolio${param}`);
+        portfolioData = await res.json();
+        
+        renderCards(portfolioData.metrics);
+        renderTable(portfolioData.accounts);
+    } catch (e) {
+        console.error("Failed to load portfolio:", e);
+    }
+}
+
+function renderCards(m) {
+    document.getElementById('stat-nw').innerText = formatCurrency(m.total_net_worth);
+    document.getElementById('stat-allocation').innerText = `${m.stock_pct}% Stock / ${m.bond_pct}% Bond`;
+    document.getElementById('stat-cash').innerText = formatCurrency(m.total_cash);
+    
+    const runwaySub = document.getElementById('stat-runway');
+    if (m.total_cash >= m.cash_floor) {
+        runwaySub.innerText = `+$${(m.total_cash - m.cash_floor).toLocaleString('en-US', {maximumFractionDigits: 0})} above $${(m.cash_floor / 1000).toFixed(0)}k floor`;
+        runwaySub.style.color = '#10b981';
+    } else {
+        runwaySub.innerText = `-$${(m.cash_floor - m.total_cash).toLocaleString('en-US', {maximumFractionDigits: 0})} deficit below floor`;
+        runwaySub.style.color = '#ef4444';
+    }
+
+    document.getElementById('stat-swr-label').innerText = `Safe Withdrawal (${m.swr_rate_pct}%)`;
+    document.getElementById('stat-swr').innerText = formatCurrency(m.swr_annual) + ' / yr';
+    document.getElementById('stat-swr-mo').innerText = formatCurrency(m.swr_monthly) + ' / mo';
+}
+
+function renderTable(accounts) {
+    const tbody = document.getElementById('accounts-table-body');
+    const excluded = getExcludedAccounts();
+    tbody.innerHTML = '';
+
+    accounts.forEach(acc => {
+        const id = acc.account_id;
+        const isChecked = !excluded.includes(id);
+        const owner = acc.owner || "Unknown";
+        const ownerClass = owner.toLowerCase().includes('anand') ? 'owner-anand' : 
+                           owner.toLowerCase().includes('joan') ? 'owner-joan' : 
+                           owner.toLowerCase().includes('joint') ? 'owner-joint' : 'owner-unknown';
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+            <td><input type="checkbox" class="acc-checkbox" data-id="${id}" ${isChecked ? 'checked' : ''} onchange="onAccountToggle(this)"></td>
+            <td style="white-space: nowrap;"><strong>${acc.institution}</strong></td>
+            <td style="font-weight: 500; color: #1e293b; max-width: 440px; word-break: break-word;">
+                ${acc.name}
+            </td>
+            <td><span class="owner-badge ${ownerClass}">${owner}</span></td>
+            <td><span class="badge badge-${acc.role}">${acc.role.replace('_', ' ')}</span></td>
+            <td style="color: #64748b; font-size: 13px;">${acc.subtype || '—'}</td>
+            <td style="text-align: right; font-weight: 600; font-family: monospace; font-size: 14px; color: ${acc.current_balance < 0 ? '#dc2626' : '#0f172a'};">${formatCurrency(acc.current_balance)}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+async function onAccountToggle(checkbox) {
+    const id = checkbox.getAttribute('data-id');
+    let excluded = getExcludedAccounts();
+    if (checkbox.checked) {
+        excluded = excluded.filter(x => x !== id);
+    } else {
+        if (!excluded.includes(id)) excluded.push(id);
+    }
+    saveExcludedAccounts(excluded);
+    await loadData();
+}
+
+async function toggleAll(masterCheckbox) {
+    const checkboxes = document.querySelectorAll('.acc-checkbox');
+    let excluded = [];
+    checkboxes.forEach(cb => {
+        cb.checked = masterCheckbox.checked;
+        const id = cb.getAttribute('data-id');
+        if (!cb.checked) excluded.push(id);
+    });
+    saveExcludedAccounts(excluded);
+    await loadData();
+}
+
+function setPrompt(text) {
+    const promptInput = document.getElementById('ai-prompt');
+    promptInput.value = text;
+    promptInput.focus();
+}
+
+function handleKeyPress(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        submitToGemini();
+    }
+}
+
+function appendMessageToUI(role, rawContent) {
+    const placeholder = document.getElementById('chat-placeholder');
+    if (placeholder) placeholder.style.display = 'none';
+
+    const thread = document.getElementById('chat-thread');
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `msg msg-${role === 'user' ? 'user' : 'gemini'}`;
+
+    const header = document.createElement('div');
+    header.className = 'msg-header';
+    header.innerText = role === 'user' ? 'You' : 'Gemini Advisor';
+
+    const content = document.createElement('div');
+    content.className = 'msg-content';
+    if (role === 'user') {
+        content.innerText = rawContent;
+    } else {
+        content.innerHTML = marked.parse(rawContent);
+    }
+
+    msgDiv.appendChild(header);
+    msgDiv.appendChild(content);
+    thread.appendChild(msgDiv);
+    thread.scrollTop = thread.scrollHeight;
+    return msgDiv;
+}
+
+function resetConversation() {
+    conversationHistory = [];
+    const thread = document.getElementById('chat-thread');
+    thread.innerHTML = `<div class="chat-placeholder" id="chat-placeholder">Ask any question about your active accounts, tax locations, or rebalancing strategy.</div>`;
+    document.getElementById('ai-prompt').value = '';
+}
+
+async function submitToGemini() {
+    const promptInput = document.getElementById('ai-prompt');
+    const prompt = promptInput.value.trim();
+    const btn = document.getElementById('ask-btn');
+    if (!prompt) return;
+
+    appendMessageToUI('user', prompt);
+    promptInput.value = '';
+    btn.innerText = "Thinking...";
+    btn.disabled = true;
+
+    const loadingElem = appendMessageToUI('gemini', 'Analyzing holdings and compiling strategy...');
+    const excluded = getExcludedAccounts();
+
+    try {
+        const res = await fetch('/ask_gemini', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                prompt: prompt,
+                excluded_accounts: excluded,
+                history: conversationHistory
+            })
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+            loadingElem.querySelector('.msg-content').innerText = "Backend Error (" + res.status + "): " + (data.detail || JSON.stringify(data));
+        } else {
+            loadingElem.querySelector('.msg-content').innerHTML = marked.parse(data.response);
+            conversationHistory.push({ role: 'user', text: prompt });
+            conversationHistory.push({ role: 'model', text: data.response });
+        }
+    } catch (e) {
+        loadingElem.querySelector('.msg-content').innerText = "Request failed: " + e.message;
+    } finally {
+        btn.innerText = "Send";
+        btn.disabled = false;
+        promptInput.focus();
+    }
+}
+
+document.getElementById('link-button').onclick = async function() {
+    const btn = document.getElementById('link-button');
+    btn.disabled = true;
+    btn.innerText = "Opening Link...";
+
+    try {
+        const res = await fetch('/create_link_token', { method: 'POST' });
+        const { link_token } = await res.json();
+
+        const handler = Plaid.create({
+            token: link_token,
+            onSuccess: async (public_token, metadata) => {
+                await fetch('/exchange_public_token', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        public_token: public_token,
+                        institution_name: metadata.institution ? metadata.institution.name : 'Unknown'
+                    })
+                });
+                location.reload();
+            }
+        });
+        handler.open();
+    } catch (e) {
+        alert("Plaid Link error: " + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Connect Custodian";
+    }
+};
+
+loadData();
+</script>
+</body>
+</html>
