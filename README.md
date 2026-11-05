@@ -1,5 +1,8 @@
 # Household FIRE Dashboard & Strategy Lab
 
+> 💡 **Looking for an easy, step-by-step walkthrough without using Git?**  
+> Check out the **[Guided Setup](GUIDED_SETUP.md)** to download and launch the dashboard on Windows or Mac.
+
 A deterministic, self-hosted financial dashboard and early retirement (FIRE) portfolio analyzer powered by Plaid Link and Google Gemini.
 
 Designed for multi-custodian households (Vanguard, Charles Schwab, Fidelity, Merrill, etc.) requiring clean asset location classification, deduplicated wrapper accounting (e.g., PCRA / BrokerageLink self-directed 401(k) shells), cash reserve monitoring, and AI-driven withdrawal strategy modeling.
@@ -49,7 +52,7 @@ This application is strictly **self-hosted and local-first**.
 
 ### 2. Clone the Repository
 ```bash
-git clone https://github.com/<YOUR_GITHUB_USERNAME>/household-fire-dashboard.git
+git clone https://github.com/anando98g/household-fire-dashboard.git
 cd household-fire-dashboard
 ```
 
